@@ -54,7 +54,13 @@ public class CustomSpringApplication {
         service.setContainer(engine);
         service.addConnector(connector);
 
-        tomcat.addServlet(contextPath, "dispatcher", new DispatcherServlet(applicationContext));
+        // 获取自定义Bean的方式DispatcherServlet
+        DispatcherServlet dispatcherServlet = applicationContext.getBean(DispatcherServlet.class);
+        if (null == dispatcherServlet){
+            dispatcherServlet = new DispatcherServlet(applicationContext);
+        }
+
+        tomcat.addServlet(contextPath, "dispatcher", dispatcherServlet);
         context.addServletMappingDecoded("/*", "dispatcher");
 
         try {
